@@ -1,0 +1,35 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="Joakim Gradin" id="create-area-table">
+        <createTable tableName="AREA">
+            <column name="AREAID" type="number"/>
+            <column name="MANAGER" type="number"/>
+            <column name="NAME" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="add-data-area" author="Joakim Gradin">
+        <insert tableName="AREA">
+            <column name="AREAID">100</column>
+            <column name="MANAGER">1</column>
+            <column name="NAME">Brattåsberget</column>
+        </insert>
+        <insert tableName="AREA">
+            <column name="AREAID">200</column>
+            <column name="MANAGER">1</column>
+            <column name="NAME">Rödmyrberget och Mogarna</column>
+        </insert>
+        <insert tableName="AREA">
+            <column name="AREAID">300</column>
+            <column name="MANAGER">1</column>
+            <column name="NAME">Högåsen</column>
+        </insert>
+        <insert tableName="AREA">
+            <column name="AREAID">400</column>
+            <column name="MANAGER">1</column>
+            <column name="NAME">Gammelkullen</column>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
