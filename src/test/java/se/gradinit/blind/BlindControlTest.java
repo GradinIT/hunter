@@ -1,4 +1,4 @@
-package se.gradinit.area;
+package se.gradinit.blind;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,21 +14,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AreaControlTest {
-
+public class BlindControlTest {
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    public void testGetAreas() throws Exception {
-        mockMvc.perform(get("/area"))
+    public void testGetBlinds() throws Exception {
+        mockMvc.perform(get("/blinds"))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray());
     }
 
     @Test
-    public void testGetHuntersByArea() throws Exception {
-        mockMvc.perform(get("/area/1"))
+    public void testCreateBlind() throws Exception {
+        String hunterJson = "{\"name\":\"MELLANBACKA\"}";
+        mockMvc.perform(post("/blind")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(hunterJson))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }

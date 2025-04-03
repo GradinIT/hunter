@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import se.gradinit.area.dao.AreaEntity;
 
 @Entity
 @Getter
@@ -23,7 +22,5 @@ public class BlindEntity {
     private Long id;
     private String description;
     private String type;
-
-    @ManyToOne
-    private AreaEntity area;
+    private Long areaId;
 }

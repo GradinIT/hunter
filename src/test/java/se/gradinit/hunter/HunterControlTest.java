@@ -1,4 +1,4 @@
-package se.gradinit.area;
+package se.gradinit.hunter;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,23 +14,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AreaControlTest {
 
+public class HunterControlTest {
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    public void testGetAreas() throws Exception {
-        mockMvc.perform(get("/area"))
+    public void testGetHunters() throws Exception {
+        mockMvc.perform(get("/hunters"))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
-    public void testGetHuntersByArea() throws Exception {
-        mockMvc.perform(get("/area/1"))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+    public void testCreateHunter() throws Exception {
+        String hunterJson = "{\"name\":\"John Doe\",\"email\":\"john.doe@example.com\",\"phone\":\"1234567890\"}";
+        mockMvc.perform(post("/hunter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(hunterJson))
+                .andExpect(status().isOk());
     }
 
 }

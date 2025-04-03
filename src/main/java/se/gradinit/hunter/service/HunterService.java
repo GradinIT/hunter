@@ -7,6 +7,7 @@ import se.gradinit.hunter.mapper.HunterMapper;
 import se.gradinit.hunter.model.Hunter;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class HunterService {
@@ -15,13 +16,21 @@ public class HunterService {
         this.hunterRepository = hunterRepository;
     }
 
-    public void createHunter(HunterEntity hunter) {
-        hunterRepository.save(hunter);
+    public Hunter createHunter(Hunter hunter) {
+        return HunterMapper.map(hunterRepository.save(HunterMapper.map(hunter)));
+    }
+
+    public void deleteHunterById(Long id) {
+        hunterRepository.deleteById(id);
+    }
+
+    public Optional<Hunter> findHunterById(Long id) {
+        return hunterRepository.findById(id).map(HunterMapper::map);
     }
 
     public List<Hunter> findHuntersByArea(Long areaId) {
         return hunterRepository.findAll().stream()
-                .filter(hunter -> hunter.getArea().getId().equals(areaId))
+                .filter(hunter -> hunter.getAreaId().equals(areaId))
                 .map(HunterMapper::map)
                 .toList();
     }
