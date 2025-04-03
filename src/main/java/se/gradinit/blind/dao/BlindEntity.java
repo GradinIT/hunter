@@ -1,4 +1,4 @@
-package se.gradinit.area.dao;
+package se.gradinit.blind.dao;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import se.gradinit.area.dao.AreaEntity;
 
 @Entity
 @Getter
@@ -16,7 +17,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StandEntity {
+public class BlindEntity {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
