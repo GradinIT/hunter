@@ -9,4 +9,7 @@ import lombok.Setter;
 @Setter
 public class Stand {
     private Long id;
+    private String description;
+    private String type;
+    private Area area;
 }

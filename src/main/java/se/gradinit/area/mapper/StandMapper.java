@@ -7,12 +7,18 @@ public class StandMapper {
     public static Stand map(StandEntity stand) {
         return Stand.builder()
                 .id(stand.getId())
+                .description(stand.getDescription())
+                .type(stand.getType())
+                .area(AreaMapper.map(stand.getArea()))
                 .build();
     }
 
     public static StandEntity map(Stand stand) {
         return StandEntity.builder()
                 .id(stand.getId())
+                .description(stand.getDescription())
+                .type(stand.getType())
+                .area(AreaMapper.map(stand.getArea()))
                 .build();
     }
 }
