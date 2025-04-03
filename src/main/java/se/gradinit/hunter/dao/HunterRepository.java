@@ -1,4 +1,4 @@
-package se.gradinit.area.dao;
+package se.gradinit.hunter.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

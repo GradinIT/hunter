@@ -1,10 +1,10 @@
-package se.gradinit.area.service;
+package se.gradinit.hunter.service;
 
 import org.springframework.stereotype.Service;
-import se.gradinit.area.dao.HunterEntity;
-import se.gradinit.area.dao.HunterRepository;
-import se.gradinit.area.mapper.HunterMapper;
-import se.gradinit.area.model.Hunter;
+import se.gradinit.hunter.dao.HunterEntity;
+import se.gradinit.hunter.dao.HunterRepository;
+import se.gradinit.hunter.mapper.HunterMapper;
+import se.gradinit.hunter.model.Hunter;
 
 import java.util.List;
 

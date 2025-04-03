@@ -1,7 +1,8 @@
-package se.gradinit.area.mapper;
+package se.gradinit.hunter.mapper;
 
-import se.gradinit.area.dao.HunterEntity;
-import se.gradinit.area.model.Hunter;
+import se.gradinit.hunter.dao.HunterEntity;
+import se.gradinit.area.mapper.AreaMapper;
+import se.gradinit.hunter.model.Hunter;
 
 public class HunterMapper {
     public static Hunter map(HunterEntity hunter) {

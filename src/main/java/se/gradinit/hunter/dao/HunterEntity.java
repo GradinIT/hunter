@@ -1,4 +1,4 @@
-package se.gradinit.area.dao;
+package se.gradinit.hunter.dao;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import se.gradinit.area.dao.AreaEntity;
 
 @Entity
 @Getter

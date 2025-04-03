@@ -1,8 +1,9 @@
-package se.gradinit.area.model;
+package se.gradinit.hunter.model;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import se.gradinit.area.model.Area;
 
 @Builder
 @Getter
