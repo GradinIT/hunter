@@ -7,10 +7,18 @@ import java.util.List;
 
 public class AreaMapper {
     public static Area map(AreaEntity area){
-        return Area.builder().build();
+        return Area.builder()
+                .name(area.getName())
+                .id(area.getId())
+                .manager(area.getManager())
+                .build();
     }
     public static AreaEntity map(Area area){
-        return AreaEntity.builder().build();
+        return AreaEntity.builder()
+                .name(area.getName())
+                .id(area.getId())
+                .manager(area.getManager())
+                .build();
     }
     public static List<Area> map(List<AreaEntity> areas){
         return areas.stream().map(AreaMapper::map).toList();

@@ -19,5 +19,4 @@ public class AreaControl {
     public ResponseEntity<List<Area>> getAreas() {
         return ResponseEntity.ok(areaService.getAreas());
     }
-
 }
