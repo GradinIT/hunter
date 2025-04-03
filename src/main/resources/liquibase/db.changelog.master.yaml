@@ -1,3 +1,5 @@
 databaseChangeLog:
   - include:
       file: liquibase/area/area-changelog.xml
+  - include:
+      file: liquibase/area/hunter-changelog.xml
