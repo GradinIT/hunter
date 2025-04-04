@@ -20,6 +20,25 @@ public class HunterService {
         return HunterMapper.map(hunterRepository.save(HunterMapper.map(hunter)));
     }
 
+    public Optional<Hunter> updateHunter(Long id, Hunter updatedHunter) {
+        return hunterRepository.findById(id).map(existingHunter -> {
+            if (updatedHunter.getName() != null) {
+                existingHunter.setName(updatedHunter.getName());
+            }
+            if (updatedHunter.getEmail() != null) {
+                existingHunter.setEmail(updatedHunter.getEmail());
+            }
+            if (updatedHunter.getPhone() != null) {
+                existingHunter.setPhone(updatedHunter.getPhone());
+            }
+            if (updatedHunter.getAreaId() != null) {
+                existingHunter.setAreaId(updatedHunter.getAreaId());
+            }
+            return HunterMapper.map(hunterRepository.save(existingHunter));
+        });
+    }
+
+
     public void deleteHunterById(Long id) {
         hunterRepository.deleteById(id);
     }

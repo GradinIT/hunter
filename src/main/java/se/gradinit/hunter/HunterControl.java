@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import se.gradinit.hunter.dao.HunterEntity;
+import se.gradinit.hunter.mapper.HunterMapper;
 import se.gradinit.hunter.model.Hunter;
 import se.gradinit.hunter.service.HunterService;
 
@@ -29,13 +30,11 @@ public class HunterControl {
 
     @PutMapping("/hunter/{id}")
     public ResponseEntity<Hunter> updateHunter(@PathVariable("id") Long id, @RequestBody Hunter hunter) {
-        Optional<Hunter> existingHunter = hunterService.findHunterById(id);
-        if (existingHunter.isEmpty()) {
+        Optional<Hunter> updatedHunter = hunterService.updateHunter(id, hunter);
+        if (updatedHunter.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-
-        hunter.setId(id);
-        return ResponseEntity.ok().body(hunterService.createHunter(hunter));
+        return ResponseEntity.ok().body(updatedHunter.get());
     }
 
     @GetMapping("/hunter/{id}")

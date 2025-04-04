@@ -7,9 +7,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import se.gradinit.hunter.model.Hunter;
+import se.gradinit.hunter.service.HunterService;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -18,6 +22,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class HunterControlTest {
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private HunterService hunterService;
 
     @Test
     public void testGetHunters() throws Exception {
@@ -28,11 +35,53 @@ public class HunterControlTest {
 
     @Test
     public void testCreateHunter() throws Exception {
-        String hunterJson = "{\"name\":\"John Doe\",\"email\":\"john.doe@example.com\",\"phone\":\"1234567890\"}";
+        String hunterJson = """
+                {
+                  "name": "John Doe",
+                  "email": "john.doe@example.com",
+                  "phone": "1234567890"
+                }
+                """;
         mockMvc.perform(post("/hunter")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(hunterJson))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testDeleteHunter() throws Exception {
+        Hunter hunter = Hunter.builder()
+                .name("John Doe")
+                .email("john.doe@example.com")
+                .phone("1234567890")
+                .build();
+        hunter = hunterService.createHunter(hunter);
+        mockMvc.perform(delete("/hunter/" + hunter.getId()))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/hunter/" + hunter.getId()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testUpdateHunter() throws Exception {
+        Hunter hunter = Hunter.builder()
+                .name("John Doe")
+                .email("john.doe@example.com")
+                .phone("1234567890")
+                .areaId(1L)
+                .build();
+        hunter = hunterService.createHunter(hunter);
+        mockMvc.perform(put("/hunter/" + hunter.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                 {
+                                   "areaId": 4
+                                 }
+                                 """))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.areaId").value(4L));
     }
 
 }

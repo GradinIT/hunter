@@ -19,6 +19,21 @@ public class BlindService {
         return BlindMapper.map(blindRepository.save(BlindMapper.map(blind)));
     }
 
+    public Optional<Blind> updateBlind(Long id, Blind updatedBlind) {
+        return blindRepository.findById(id).map(existingBlind -> {
+            if (updatedBlind.getDescription() != null) {
+                existingBlind.setDescription(updatedBlind.getDescription());
+            }
+            if (updatedBlind.getType() != null) {
+                existingBlind.setType(updatedBlind.getType());
+            }
+            if (updatedBlind.getAreaId() != null) {
+                existingBlind.setAreaId(updatedBlind.getAreaId());
+            }
+            return BlindMapper.map(blindRepository.save(existingBlind));
+        });
+    }
+
     public void deleteBlindById(Long id) {
         blindRepository.deleteById(id);
     }

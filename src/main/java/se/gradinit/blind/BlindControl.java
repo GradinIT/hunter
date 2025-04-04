@@ -37,13 +37,12 @@ public class BlindControl {
 
     @PutMapping("/blind/{id}")
     public ResponseEntity<Blind> updateBlind(@PathVariable("id") Long id, @RequestBody Blind blind) {
-        Optional<Blind> existingBlind = blindService.findBlindById(id);
-        if (existingBlind.isEmpty()) {
+        Optional<Blind> updatedBlind = blindService.updateBlind(id, blind);
+        if (updatedBlind.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        blind.setId(id);
-        return ResponseEntity.ok().body(blindService.createBlind(blind));
+        return ResponseEntity.ok().body(updatedBlind.get());
     }
 
     @DeleteMapping("/blind/{id}")
