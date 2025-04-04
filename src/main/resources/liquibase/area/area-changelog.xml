@@ -41,28 +41,7 @@
             <column name="manager" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet id="1743668118340-2" author="olle">
-        <createTable tableName="hunter_entity">
-            <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_hunterentity"/>
-            </column>
-            <column name="name" type="VARCHAR(255)"/>
-            <column name="email" type="VARCHAR(255)"/>
-            <column name="phone" type="VARCHAR(255)"/>
-            <column name="area_id" type="BIGINT"/>
-        </createTable>
-    </changeSet>
-    <changeSet id="1743668118340-3" author="olle">
-        <createTable tableName="stand_entity">
-            <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_standentity"/>
-            </column>
-            <column name="area" type="BIGINT"/>
-        </createTable>
-    </changeSet>
-    <changeSet id="1743668118340-4" author="olle">
-        <addForeignKeyConstraint baseColumnNames="area_id" baseTableName="hunter_entity"
-                                 constraintName="FK_HUNTERENTITY_ON_AREA" referencedColumnNames="id"
-                                 referencedTableName="area_entity"/>
+    <changeSet id="1743694793097-3" author="olle">
+        <dropTable cascadeConstraints="true" tableName="area"/>
     </changeSet>
 </databaseChangeLog>

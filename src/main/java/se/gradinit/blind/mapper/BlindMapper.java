@@ -10,7 +10,7 @@ public class BlindMapper {
                 .id(blind.getId())
                 .description(blind.getDescription())
                 .type(blind.getType())
-                .area(AreaMapper.map(blind.getArea()))
+                .areaId(blind.getAreaId())
                 .build();
     }
 
@@ -19,7 +19,7 @@ public class BlindMapper {
                 .id(blind.getId())
                 .description(blind.getDescription())
                 .type(blind.getType())
-                .area(AreaMapper.map(blind.getArea()))
+                .areaId(blind.getAreaId())
                 .build();
     }
 }

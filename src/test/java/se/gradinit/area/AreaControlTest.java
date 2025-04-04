@@ -27,25 +27,10 @@ public class AreaControlTest {
     }
 
     @Test
-    public void testGetHunters() throws Exception {
-        mockMvc.perform(get("/hunters"))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
-    }
-
-    @Test
     public void testGetHuntersByArea() throws Exception {
         mockMvc.perform(get("/area/1"))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
 
-    @Test
-    public void testCreateHunter() throws Exception {
-        String hunterJson = "{\"name\":\"John Doe\",\"email\":\"john.doe@example.com\",\"phone\":\"1234567890\"}";
-        mockMvc.perform(post("/hunter")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(hunterJson))
-                .andExpect(status().isOk());
-    }
 }

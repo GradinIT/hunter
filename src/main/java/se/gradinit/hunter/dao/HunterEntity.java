@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import se.gradinit.area.dao.AreaEntity;
 
 @Entity
 @Getter
@@ -24,7 +23,5 @@ public class HunterEntity {
     private String name;
     private String email;
     private String phone;
-
-    @ManyToOne
-    private AreaEntity area;
+    private Long areaId;
 }
