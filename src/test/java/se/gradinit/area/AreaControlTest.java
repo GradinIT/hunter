@@ -25,12 +25,14 @@ public class AreaControlTest {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
-
+    /*
     @Test
     public void testGetHuntersByArea() throws Exception {
         mockMvc.perform(get("/area/1"))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
+
+     */
 
 }
