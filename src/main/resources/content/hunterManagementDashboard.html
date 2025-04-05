@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hunter and Area Management Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .section {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        input, select, button {
+            margin: 5px 0;
+            padding: 5px;
+            width: 100%;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hunter and Area Management Dashboard</h1>
+
+    <div class="dashboard">
+        <!-- Area Management Section -->
+        <div class="section">
+            <h2>Area Management</h2>
+            
+            <!-- Create Area Form -->
+            <h3>Create New Area</h3>
+            <form id="createAreaForm">
+                <input type="text" id="areaName" placeholder="Area Name" required>
+                <input type="text" id="areaDescription" placeholder="Area Description">
+                <button type="submit">Create Area</button>
+            </form>
+
+            <!-- Area List -->
+            <h3>Existing Areas</h3>
+            <button onclick="loadAreas()">Refresh Areas</button>
+            <table id="areasTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="areasTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Hunter Management Section -->
+        <div class="section">
+            <h2>Hunter Management</h2>
+            
+            <!-- Create Hunter Form -->
+            <h3>Create New Hunter</h3>
+            <form id="createHunterForm">
+                <input type="text" id="hunterName" placeholder="Hunter Name" required>
+                <select id="hunterAreaSelect" required>
+                    <option value="">Select Area</option>
+                </select>
+                <button type="submit">Create Hunter</button>
+            </form>
+
+            <!-- Hunter List -->
+            <h3>Hunter List</h3>
+            <select id="hunterAreaFilter">
+                <option value="">All Areas</option>
+            </select>
+            <button onclick="loadHunters()">Refresh Hunters</button>
+            <table id="huntersTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Area</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="huntersTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Error Display -->
+    <div id="errorContainer" class="error"></div>
+
+    <script>
+        // Configuration
+        const BASE_URL = 'http://localhost';
+        let areasCache = [];
+        let huntersCache = [];
+
+        // Area Management Functions
+        async function createArea(event) {
+            event.preventDefault();
+            const name = document.getElementById('areaName').value;
+            const description = document.getElementById('areaDescription').value;
+
+            try {
+                const response = await fetch(`${BASE_URL}/area`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        name: name, 
+                        description: description 
+                    })
+                });
+
+                if (response.ok) {
+                    alert('Area created successfully');
+                    document.getElementById('areaName').value = '';
+                    document.getElementById('areaDescription').value = '';
+                    loadAreas();
+                } else {
+                    throw new Error('Failed to create area');
+                }
+            } catch (error) {
+                displayError('Error creating area: ' + error.message);
+            }
+        }
+
+        async function loadAreas() {
+            try {
+                const response = await fetch(`${BASE_URL}/area`);
+                areasCache = await response.json();
+
+                const tableBody = document.getElementById('areasTableBody');
+                const areaSelect = document.getElementById('hunterAreaSelect');
+                const areaFilter = document.getElementById('hunterAreaFilter');
+
+                // Clear existing options
+                tableBody.innerHTML = '';
+                areaSelect.innerHTML = '<option value="">Select Area</option>';
+                areaFilter.innerHTML = '<option value="">All Areas</option>';
+
+                // Populate areas
+                areasCache.forEach(area => {
+                    // Areas Table
+                    const row = `
+                        <tr>
+                            <td>${area.id}</td>
+                            <td>${area.name}</td>
+                            <td>${area.description || 'No description'}</td>
+                            <td>
+                                <button onclick="deleteArea(${area.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+
+                    // Area Selection Dropdowns
+                    const createOption = new Option(area.name, area.id);
+                    const filterOption = new Option(area.name, area.id);
+                    
+                    areaSelect.add(createOption);
+                    areaFilter.add(filterOption);
+                });
+            } catch (error) {
+                displayError('Error loading areas: ' + error.message);
+            }
+        }
+
+        async function deleteArea(areaId) {
+            if (!confirm('Are you sure you want to delete this area?')) return;
+
+            try {
+                const response = await fetch(`${BASE_URL}/area/${areaId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    alert('Area deleted successfully');
+                    loadAreas();
+                    loadHunters();
+                } else {
+                    throw new Error('Failed to delete area');
+                }
+            } catch (error) {
+                displayError('Error deleting area: ' + error.message);
+            }
+        }
+
+        // Hunter Management Functions
+        async function createHunter(event) {
+            event.preventDefault();
+            const name = document.getElementById('hunterName').value;
+            const areaId = document.getElementById('hunterAreaSelect').value;
+
+            try {
+                const response = await fetch(`${BASE_URL}/hunter`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        name: name, 
+                        areaId: parseInt(areaId) 
+                    })
+                });
+
+                if (response.ok) {
+                    alert('Hunter created successfully');
+                    document.getElementById('hunterName').value = '';
+                    document.getElementById('hunterAreaSelect').selectedIndex = 0;
+                    loadHunters();
+                } else {
+                    throw new Error('Failed to create hunter');
+                }
+            } catch (error) {
+                displayError('Error creating hunter: ' + error.message);
+            }
+        }
+
+        async function loadHunters() {
+            const selectedAreaId = document.getElementById('hunterAreaFilter').value;
+
+            try {
+                let url = `${BASE_URL}/hunters`;
+                if (selectedAreaId) {
+                    url = `${BASE_URL}/hunter/area/${selectedAreaId}`;
+                }
+
+                const response = await fetch(url);
+                huntersCache = await response.json();
+
+                const tableBody = document.getElementById('huntersTableBody');
+                tableBody.innerHTML = '';
+
+                huntersCache.forEach(hunter => {
+                    // Find corresponding area
+                    const area = areasCache.find(a => a.id === hunter.areaId) || 
+                                 { name: 'Unassigned', id: 'N/A' };
+
+                    const row = `
+                        <tr>
+                            <td>${hunter.id || 'N/A'}</td>
+                            <td>${hunter.name}</td>
+                            <td>${area.name}</td>
+                            <td>
+                                <button onclick="deleteHunter(${hunter.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            } catch (error) {
+                displayError('Error loading hunters: ' + error.message);
+            }
+        }
+
+        async function deleteHunter(hunterId) {
+            if (!confirm('Are you sure you want to delete this hunter?')) return;
+
+            try {
+                const response = await fetch(`${BASE_URL}/hunter/${hunterId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    alert('Hunter deleted successfully');
+                    loadHunters();
+                } else {
+                    throw new Error('Failed to delete hunter');
+                }
+            } catch (error) {
+                displayError('Error deleting hunter: ' + error.message);
+            }
+        }
+
+        // Utility Functions
+        function displayError(message) {
+            const errorContainer = document.getElementById('errorContainer');
+            errorContainer.textContent = message;
+            console.error(message);
+            
+            // Clear error after 5 seconds
+            setTimeout(() => {
+                errorContainer.textContent = '';
+            }, 5000);
+        }
+
+        // Event Listeners
+        document.getElementById('createAreaForm').addEventListener('submit', createArea);
+        document.getElementById('createHunterForm').addEventListener('submit', createHunter);
+        document.getElementById('hunterAreaFilter').addEventListener('change', loadHunters);
+
+        // Initialize Page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAreas();
+            loadHunters();
+        });
+    </script>
+</body>
+</html>
