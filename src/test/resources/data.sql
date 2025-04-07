@@ -39,3 +39,24 @@ INSERT INTO hunter_entity (id, name, area_id) VALUES (23, 'William Ek', 9);
 INSERT INTO hunter_entity (id, name, area_id) VALUES (24, 'Alice Björk', 10);
 INSERT INTO hunter_entity (id, name, area_id) VALUES (25, 'Lucas Ström', 10);
 INSERT INTO hunter_entity (id, name, area_id) VALUES (26, 'Moa Henriksson', 10);
+
+-- Blinds
+INSERT INTO blind_entity (id, description) VALUES (1, 'Ett bra pass med god sikt.');
+INSERT INTO blind_entity (id, description) VALUES (2, 'Ett pass nära vatten med mycket vilt.');
+INSERT INTO blind_entity (id, description) VALUES (3, 'Ett pass i tät skog.');
+INSERT INTO blind_entity (id, description) VALUES (4, 'Ett pass med god utsikt över en dal.');
+INSERT INTO blind_entity (id, description) VALUES (5, 'Ett pass nära en myr.');
+INSERT INTO blind_entity (id, description) VALUES (6, 'Ett pass med mycket älg.');
+INSERT INTO blind_entity (id, description) VALUES (7, 'Ett pass med goda möjligheter för fågeljakt.');
+INSERT INTO blind_entity (id, description) VALUES (8, 'Ett pass med mycket rådjur.');
+INSERT INTO blind_entity (id, description) VALUES (9, 'Ett pass nära en bäck.');
+INSERT INTO blind_entity (id, description) VALUES (10, 'Ett pass med god sikt och mycket vilt.');
+
+-- Update auto-increment value for area_entity
+ALTER TABLE area_entity ALTER COLUMN id RESTART WITH 11;
+
+-- Update auto-increment value for hunter_entity
+ALTER TABLE hunter_entity ALTER COLUMN id RESTART WITH 27;
+
+-- Update auto-increment value for blind_entity
+ALTER TABLE blind_entity ALTER COLUMN id RESTART WITH 11;

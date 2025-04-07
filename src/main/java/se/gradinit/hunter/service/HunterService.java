@@ -49,7 +49,8 @@ public class HunterService {
 
     public List<Hunter> findHuntersByArea(Long areaId) {
         return hunterRepository.findAll().stream()
-                .filter(hunter -> hunter.getAreaId().equals(areaId))
+                .filter((hunter) ->
+                    hunter.getAreaId() != null && hunter.getAreaId().equals(areaId))
                 .map(HunterMapper::map)
                 .toList();
     }
