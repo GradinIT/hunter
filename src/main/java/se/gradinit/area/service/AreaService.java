@@ -40,6 +40,9 @@ public class AreaService {
             if (updatedArea.getManager() != null) {
                 existingArea.setManager(updatedArea.getManager());
             }
+            if (updatedArea.getDescription() != null) {
+                existingArea.setDescription(updatedArea.getDescription());
+            }
             return AreaMapper.map(areaRepository.save(existingArea));
         });
     }
