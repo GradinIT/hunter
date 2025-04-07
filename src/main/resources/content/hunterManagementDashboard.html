@@ -49,7 +49,7 @@
         <!-- Area Management Section -->
         <div class="section">
             <h2>Area Management</h2>
-            
+
             <!-- Create Area Form -->
             <h3>Create New Area</h3>
             <form id="createAreaForm">
@@ -77,7 +77,7 @@
         <!-- Hunter Management Section -->
         <div class="section">
             <h2>Hunter Management</h2>
-            
+
             <!-- Create Hunter Form -->
             <h3>Create New Hunter</h3>
             <form id="createHunterForm">
@@ -131,9 +131,9 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ 
-                        name: name, 
-                        description: description 
+                    body: JSON.stringify({
+                        name: name,
+                        description: description
                     })
                 });
 
@@ -182,7 +182,7 @@
                     // Area Selection Dropdowns
                     const createOption = new Option(area.name, area.id);
                     const filterOption = new Option(area.name, area.id);
-                    
+
                     areaSelect.add(createOption);
                     areaFilter.add(filterOption);
                 });
@@ -223,9 +223,9 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ 
-                        name: name, 
-                        areaId: parseInt(areaId) 
+                    body: JSON.stringify({
+                        name: name,
+                        areaId: parseInt(areaId)
                     })
                 });
 
@@ -259,7 +259,7 @@
 
                 huntersCache.forEach(hunter => {
                     // Find corresponding area
-                    const area = areasCache.find(a => a.id === hunter.areaId) || 
+                    const area = areasCache.find(a => a.id === hunter.areaId) ||
                                  { name: 'Unassigned', id: 'N/A' };
 
                     const row = `
@@ -303,7 +303,7 @@
             const errorContainer = document.getElementById('errorContainer');
             errorContainer.textContent = message;
             console.error(message);
-            
+
             // Clear error after 5 seconds
             setTimeout(() => {
                 errorContainer.textContent = '';
