@@ -16,4 +16,5 @@ public class Area {
     private Long id;
     private String name;
     private Long manager;
+    private String description;
 }

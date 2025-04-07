@@ -11,6 +11,7 @@ public class AreaMapper {
                 .name(area.getName())
                 .id(area.getId())
                 .manager(area.getManager())
+                .description(area.getDescription())
                 .build();
     }
     public static AreaEntity map(Area area){
@@ -18,6 +19,7 @@ public class AreaMapper {
                 .name(area.getName())
                 .id(area.getId())
                 .manager(area.getManager())
+                .description(area.getDescription())
                 .build();
     }
     public static List<Area> map(List<AreaEntity> areas){
