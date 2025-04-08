@@ -83,6 +83,14 @@
                             <!-- Areas will be loaded dynamically -->
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="hunter-phone">Phone:</label>
+                        <input type="text" id="hunter-phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="hunter-email">Email:</label>
+                        <input type="text" id="hunter-email">
+                    </div>
                     <div class="form-buttons">
                         <button type="submit" class="submit-btn">Save</button>
                         <button type="button" class="cancel-btn" id="cancel-hunter-form">Cancel</button>
@@ -97,6 +105,8 @@
                     <th>ID</th>
                     <th>Name</th>
                     <th>Assigned Area</th>
+                    <th>Phone</th>
+                    <th>Email</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -548,6 +558,8 @@
                         <td>${hunter.id}</td>
                         <td>${hunter.name}</td>
                         <td>${areaName}</td>
+                        <td>${hunter.phone || ''}</td>
+                        <td>${hunter.email || ''}</td>
                         <td>
                             <button class="action-btn edit-btn" data-id="${hunter.id}">Edit</button>
                             <button class="action-btn delete-btn" data-id="${hunter.id}">Delete</button>
@@ -573,6 +585,8 @@
             document.getElementById('hunter-id').value = hunter.id;
             document.getElementById('hunter-name').value = hunter.name;
             document.getElementById('hunter-area').value = hunter.areaId;
+            document.getElementById('hunter-phone').value = hunter.phone;
+            document.getElementById('hunter-email').value = hunter.email;
 
             hunterFormTitle.textContent = 'Edit Hunter';
             showForm(hunterForm);
@@ -621,7 +635,9 @@
 
             const hunterData = {
                 name: document.getElementById('hunter-name').value,
-                areaId: document.getElementById('hunter-area').value
+                areaId: document.getElementById('hunter-area').value,
+                phone: document.getElementById('hunter-phone').value,
+                email: document.getElementById('hunter-email').value
             };
 
             showLoader(huntersLoader);
