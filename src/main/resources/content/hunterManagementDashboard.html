@@ -172,7 +172,7 @@
                     <div class="form-group">
                         <label for="report-blind">Assigned Blind:</label>
                         <select id="report-blind">
-                            <option value="">Select a blind</option>
+                            <option value="" disabled>Select a blind</option>
                             <!-- Blinds will be loaded dynamically -->
                         </select>
                     </div>
@@ -202,7 +202,7 @@
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Blind ID</th>
+                    <th>Blind</th>
                     <th>Repair</th>
                     <th>Move</th>
                     <th>Clear</th>
@@ -304,6 +304,7 @@
 
         // Initial data load
         loadAreas();
+        loadBlinds();
 
         // Areas CRUD operations
         function loadAreas() {
@@ -926,6 +927,7 @@
             e.preventDefault();
             const reportData = {
                 repair: document.getElementById('report-repair').value,
+                blindId: document.getElementById('report-blind').value,
                 move: document.getElementById('report-move').value === 'true',
                 clear: document.getElementById('report-clear').value === 'true'
             };
@@ -1006,9 +1008,11 @@
 
             reports.forEach(report => {
                 const row = document.createElement('tr');
+                const blind = blinds.find(b => b.id === report.blindId);
+                const blindDescription = blind ? blind.description : 'Unknown Blind';
                 row.innerHTML = `
                         <td>${report.id}</td>
-                        <td>${report.blindId}</td>
+                        <td>${blindDescription}</td>
                         <td>${report.repair}</td>
                         <td>${report.move ? 'Yes' : 'No'}</td>
                         <td>${report.clear ? 'Yes' : 'No'}</td>
@@ -1027,6 +1031,8 @@
 
                 reportsList.appendChild(row);
             });
+
+            updateReportBlindOptions();
         }
 
         function editReport(id) {
@@ -1038,6 +1044,7 @@
             document.getElementById('report-repair').value = report.repair;
             document.getElementById('report-move').value = report.move || 'false';
             document.getElementById('report-clear').value = report.clear || 'false';
+            document.getElementById('report-blind').value = report.blindId || 'N/A';
 
             reportFormTitle.textContent = 'Edit Report';
             showForm(reportForm);
@@ -1068,6 +1075,18 @@
                     hideLoader(reportsLoader);
                     renderReports();
                 });
+        }
+
+        function updateReportBlindOptions() {
+            const reportBlind = document.getElementById('report-blind');
+            reportBlind.innerHTML = '<option value="" disabled>Select a blind</option>';
+
+            blinds.forEach(blind => {
+                const option = document.createElement('option');
+                option.value = blind.id;
+                option.textContent = blind.description;
+                reportBlind.appendChild(option);
+            });
         }
 
         function showLoader(loader) {
