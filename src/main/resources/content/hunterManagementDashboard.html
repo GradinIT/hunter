@@ -15,6 +15,7 @@
         <div class="tab active" data-tab="areas">Areas</div>
         <div class="tab" data-tab="hunters">Hunters</div>
         <div class="tab" data-tab="blinds">Blinds</div>
+        <div class="tab" data-tab="reports">Reports</div>
     </div>
 
     <div class="content">
@@ -82,6 +83,14 @@
                             <!-- Areas will be loaded dynamically -->
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="hunter-phone">Phone:</label>
+                        <input type="text" id="hunter-phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="hunter-email">Email:</label>
+                        <input type="text" id="hunter-email">
+                    </div>
                     <div class="form-buttons">
                         <button type="submit" class="submit-btn">Save</button>
                         <button type="button" class="cancel-btn" id="cancel-hunter-form">Cancel</button>
@@ -96,6 +105,8 @@
                     <th>ID</th>
                     <th>Name</th>
                     <th>Assigned Area</th>
+                    <th>Phone</th>
+                    <th>Email</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -155,6 +166,64 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Reports Tab Content -->
+        <div class="tab-content" id="reports-content">
+            <button class="add-btn" id="add-report-btn">Add New report</button>
+            <!-- Report Form -->
+            <div class="form-container" id="report-form">
+                <h2 id="report-form-title">Add New report</h2>
+                <form id="report-form-element">
+                    <input type="hidden" id="report-id">
+                    <div class="form-group">
+                        <label for="report-repair">Repair:</label>
+                        <textarea id="report-repair"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="report-blind">Assigned Blind:</label>
+                        <select id="report-blind">
+                            <option value="" disabled>Select a blind</option>
+                            <!-- Blinds will be loaded dynamically -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="report-move">Move:</label>
+                        <select id="report-move">
+                            <option value="false">No</option>
+                            <option value="true">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="report-clear">Clear:</label>
+                        <select id="report-clear">
+                            <option value="false">No</option>
+                            <option value="true">Yes</option>
+                        </select>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Save</button>
+                        <button type="button" class="cancel-btn" id="cancel-report-form">Cancel</button>
+                    </div>
+                </form>
+            </div>
+            <div class="loader" id="reports-loader">Loading reports...</div>
+            <div class="error-message" id="reports-error"></div>
+            <table id="reports-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Blind</th>
+                    <th>Repair</th>
+                    <th>Move</th>
+                    <th>Clear</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody id="reports-list">
+                <!-- Reports will be added here dynamically -->
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -198,13 +267,25 @@
         const blindFormTitle = document.getElementById('blind-form-title');
         const cancelBlindForm = document.getElementById('cancel-blind-form');
 
+        // Reports elements
+        const reportsList = document.getElementById('reports-list');
+        const reportsLoader = document.getElementById('reports-loader');
+        const reportsError = document.getElementById('reports-error');
+        const addReportBtn = document.getElementById('add-report-btn');
+        const reportForm = document.getElementById('report-form');
+        const reportFormElement = document.getElementById('report-form-element');
+        const reportFormTitle = document.getElementById('report-form-title');
+        const cancelReportForm = document.getElementById('cancel-report-form');
+
         // Store current data
         let areas = [];
         let hunters = [];
         let blinds = [];
+        let reports = [];
         let currentAreaId = null;
         let currentHunterId = null;
         let currentBlindId = null;
+        let currentReportId = null;
 
         // Tab switching
         tabs.forEach(tab => {
@@ -225,12 +306,15 @@
                     loadHunters();
                 } else if (tabName === 'blinds' && blinds.length === 0) {
                     loadBlinds();
+                } else if (tabName === 'reports' && reports.length === 0) {
+                    loadReports();
                 }
             });
         });
 
         // Initial data load
         loadAreas();
+        loadBlinds();
 
         // Areas CRUD operations
         function loadAreas() {
@@ -474,6 +558,8 @@
                         <td>${hunter.id}</td>
                         <td>${hunter.name}</td>
                         <td>${areaName}</td>
+                        <td>${hunter.phone || ''}</td>
+                        <td>${hunter.email || ''}</td>
                         <td>
                             <button class="action-btn edit-btn" data-id="${hunter.id}">Edit</button>
                             <button class="action-btn delete-btn" data-id="${hunter.id}">Delete</button>
@@ -499,6 +585,8 @@
             document.getElementById('hunter-id').value = hunter.id;
             document.getElementById('hunter-name').value = hunter.name;
             document.getElementById('hunter-area').value = hunter.areaId;
+            document.getElementById('hunter-phone').value = hunter.phone;
+            document.getElementById('hunter-email').value = hunter.email;
 
             hunterFormTitle.textContent = 'Edit Hunter';
             showForm(hunterForm);
@@ -547,7 +635,9 @@
 
             const hunterData = {
                 name: document.getElementById('hunter-name').value,
-                areaId: document.getElementById('hunter-area').value
+                areaId: document.getElementById('hunter-area').value,
+                phone: document.getElementById('hunter-phone').value,
+                email: document.getElementById('hunter-email').value
             };
 
             showLoader(huntersLoader);
@@ -811,6 +901,207 @@
                 option.value = area.id;
                 option.textContent = area.name;
                 blindArea.appendChild(option);
+            });
+        }
+
+        // Reports CRUD operations
+        function loadReports() {
+            showLoader(reportsLoader);
+            hideError(reportsError);
+
+            fetch(`${BASE_URL}/reports`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to load reports');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    reports = data;
+                    renderReports();
+                    hideLoader(reportsLoader);
+                })
+                .catch(error => {
+                    showError(reportsError, error.message);
+                    hideLoader(reportsLoader);
+                });
+        }
+
+        addReportBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            currentReportId = null;
+            reportFormElement.reset();
+            reportFormTitle.textContent = 'Add New Report';
+            showForm(reportForm);
+        });
+
+        cancelReportForm.addEventListener('click', () => {
+            hideForm(reportForm);
+        });
+
+        reportFormElement.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const reportData = {
+                repair: document.getElementById('report-repair').value,
+                blindId: document.getElementById('report-blind').value,
+                move: document.getElementById('report-move').value === 'true',
+                clear: document.getElementById('report-clear').value === 'true'
+            };
+            showLoader(reportsLoader);
+            hideError(reportsError);
+
+            if (currentReportId) {
+                // Update existing report
+                reportData.id = currentReportId;
+                fetch(`${BASE_URL}/report/${currentReportId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(reportData)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to update report');
+                        }
+                        return response.json();
+                    })
+                    .then(updatedReport => {
+                        // Update report in the list
+                        const index = reports.findIndex(r => r.id === currentReportId);
+                        if (index !== -1) {
+                            reports[index] = updatedReport;
+                        }
+                        renderReports();
+                        hideForm(reportForm);
+                        hideLoader(reportsLoader);
+                    })
+                    .catch(error => {
+                        showError(reportsError, error.message);
+                        hideLoader(reportsLoader);
+                        renderReports();
+                        hideForm(reportForm);
+                    });
+            } else {
+                // Add new report
+                fetch(`${BASE_URL}/report`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(reportData)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to add report');
+                        }
+                        return response.json();
+                    })
+                    .then(newReport => {
+                        reports.push(newReport);
+                        renderReports();
+                        hideForm(reportForm);
+                        hideLoader(reportsLoader);
+                    })
+                    .catch(error => {
+                        showError(reportsError, error.message);
+                        hideLoader(reportsLoader);
+                        renderReports();
+                        hideForm(reportForm);
+                    });
+            }
+        });
+
+        function renderReports() {
+            reportsList.innerHTML = '';
+
+            if (reports.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="3" style="text-align: center;">No reports found</td>';
+                reportsList.appendChild(row);
+                return;
+            }
+
+            reports.forEach(report => {
+                const row = document.createElement('tr');
+                const blind = blinds.find(b => b.id === report.blindId);
+                const blindDescription = blind ? blind.description : 'Unknown Blind';
+                row.innerHTML = `
+                        <td>${report.id}</td>
+                        <td>${blindDescription}</td>
+                        <td>${report.repair}</td>
+                        <td>${report.move ? 'Yes' : 'No'}</td>
+                        <td>${report.clear ? 'Yes' : 'No'}</td>
+                        <td>
+                            <button class="action-btn edit-btn" data-id="${report.id}">Edit</button>
+                            <button class="action-btn delete-btn" data-id="${report.id}">Delete</button>
+                        </td>
+                    `;
+
+                // Add event listeners
+                const editBtn = row.querySelector('.edit-btn');
+                const deleteBtn = row.querySelector('.delete-btn');
+
+                editBtn.addEventListener('click', () => editReport(report.id));
+                deleteBtn.addEventListener('click', () => deleteReport(report.id));
+
+                reportsList.appendChild(row);
+            });
+
+            updateReportBlindOptions();
+        }
+
+        function editReport(id) {
+            const report = reports.find(r => r.id === id);
+            if (!report) return;
+
+            currentReportId = id;
+            document.getElementById('report-id').value = report.id;
+            document.getElementById('report-repair').value = report.repair;
+            document.getElementById('report-move').value = report.move || 'false';
+            document.getElementById('report-clear').value = report.clear || 'false';
+            document.getElementById('report-blind').value = report.blindId || 'N/A';
+
+            reportFormTitle.textContent = 'Edit Report';
+            showForm(reportForm);
+        }
+
+        function deleteReport(id) {
+            if (!confirm('Are you sure you want to delete this report?')) {
+                return;
+            }
+
+            showLoader(reportsLoader);
+            hideError(reportsError);
+
+            fetch(`${BASE_URL}/report/${id}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to delete report');
+                    }
+                    // Remove report from the list
+                    reports = reports.filter(r => r.id !== id);
+                    renderReports();
+                    hideLoader(reportsLoader);
+                })
+                .catch(error => {
+                    showError(reportsError, error.message);
+                    hideLoader(reportsLoader);
+                    renderReports();
+                });
+        }
+
+        function updateReportBlindOptions() {
+            const reportBlind = document.getElementById('report-blind');
+            reportBlind.innerHTML = '<option value="" disabled>Select a blind</option>';
+
+            blinds.forEach(blind => {
+                const option = document.createElement('option');
+                option.value = blind.id;
+                option.textContent = blind.description;
+                reportBlind.appendChild(option);
             });
         }
 
