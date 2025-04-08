@@ -5,4 +5,5 @@ databaseChangeLog:
       file: liquibase/hunter/hunter-changelog.xml
   - include:
       file: liquibase/blind/blind-changelog.xml
-
+  - include:
+      file: liquibase/report/report-changelog.xml
