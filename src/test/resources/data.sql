@@ -57,3 +57,12 @@ INSERT INTO report_entity (blind_id, repair, move, clear) VALUES (6, '', TRUE, F
 INSERT INTO report_entity (blind_id, repair, move, clear) VALUES (7, '', FALSE, TRUE);
 INSERT INTO report_entity (blind_id, repair, move, clear) VALUES (8, '', FALSE, TRUE);
 INSERT INTO report_entity (blind_id, repair, move, clear) VALUES (9, '', TRUE, TRUE);
+
+
+-- Observations
+INSERT INTO observation_entity (blind_id, animal, count) VALUES (1, 'Älg', 2);
+INSERT INTO observation_entity (blind_id, animal, count) VALUES (2, 'Rådjur', 3);
+INSERT INTO observation_entity (blind_id, animal, count) VALUES (2, 'Rådjur', 1);
+INSERT INTO observation_entity (blind_id, animal, count) VALUES (2, 'Älg', 1);
+INSERT INTO observation_entity (blind_id, animal, count) VALUES (3, 'Rådjur', 1);
+INSERT INTO observation_entity (blind_id, animal, count) VALUES (4, 'Rådjur', 2);

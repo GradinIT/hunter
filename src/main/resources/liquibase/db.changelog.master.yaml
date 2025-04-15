@@ -7,3 +7,5 @@ databaseChangeLog:
       file: liquibase/blind/blind-changelog.xml
   - include:
       file: liquibase/report/report-changelog.xml
+  - include:
+      file: liquibase/observation/observation-changelog.xml
