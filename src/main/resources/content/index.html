@@ -280,43 +280,42 @@
         <div class="tab-content" id="lottery-content">
             <h2>Passlottning</h2>
             <div class="lottery-selector">
-                <div class="lottery-list">
-                    <table id="lottery-hunters-table" class="lottery-table">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Jägare</th>
-                            </tr>
-                        </thead>
-                        <tbody id="lottery-hunters-list">
-                        <!-- Hunters will be added dynamically -->
-                        </tbody>
-                    </table>
-                </div>
-                <div class="lottery-list">
-                    <table id="lottery-blinds-table" class="lottery-table">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Pass</th>
-                            </tr>
-                        </thead>
-                        <tbody id="lottery-blinds-list">
-                        <!-- Blinds will be added dynamically -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <button class="edit-btn" id="roll-btn">Lotta</button>
-            <table id="lottery-result-table">
-                <thead>
+                <table id="lottery-hunters-table" class="lottery-table active overflow">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Jägare</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lottery-hunters-list">
+                    <!-- Hunters will be added dynamically -->
+                    </tbody>
+                </table>
+                <table id="lottery-blinds-table" class="lottery-table overflow">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Pass</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lottery-blinds-list">
+                    <!-- Blinds will be added dynamically -->
+                    </tbody>
+                </table>
+                <table class="lottery-table" id="lottery-result-table">
+                    <thead>
                     <tr>
                         <th>Jägare</th>
                         <th>Pass</th>
                     </tr>
-                </thead>
-                <tbody id="lottery-result"></tbody>
-            </table>
+                    </thead>
+                    <tbody id="lottery-result"></tbody>
+                </table>
+            </div>
+            <div class="lottery-control">
+                <button class="edit-btn" id="lottery-prev-btn">Tillbaka</button>
+                <button class="edit-btn" id="lottery-next-btn">Nästa</button>
+            </div>
         </div>
     </div>
 </div>
@@ -432,39 +431,74 @@
                         row.insertCell().innerText = blind.description;
                     }
 
-                    document.getElementById('roll-btn').addEventListener('click', e => {
-                        const selectedHunters = document.querySelectorAll('#lottery-hunters-table tbody input[type="checkbox"]:checked');
-                        const selectedBlinds = document.querySelectorAll('#lottery-blinds-table tbody input[type="checkbox"]:checked');
+                    let lotteryStage = 0;
+                    const lotteryStages = [
+                        { name: 'Jägare', id: 'lottery-hunters-table' },
+                        { name: 'Pass', id: 'lottery-blinds-table' },
+                        { name: 'Resultat', id: 'lottery-result-table' }
+                    ];
 
-                        if (selectedHunters.length !==  selectedBlinds.length) {
-                            alert(`Välj lika många jägare (${selectedHunters.length}) som pass (${selectedBlinds.length}).`);
-                            return;
+                    document.getElementById('lottery-prev-btn').addEventListener('click', e => {
+                        lotteryStage--;
+                        if (lotteryStage <= 0) {
+                            // first stage
+                            document.getElementById('lottery-prev-btn').style.visibility = 'hidden';
+                            lotteryStage = 0;
                         }
+                        document.getElementById('lottery-next-btn').innerText = "Nästa";
 
-                        fetch(`${BASE_URL}/lottery`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                hunters: Array.from(selectedHunters).map(h => h.value),
-                                blinds: Array.from(selectedBlinds).map(b => b.value)
-                            })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            let table = document.getElementById('lottery-result');
-                            table.innerHTML = '';
-                            for (const pair of data.pairs) {
-                                let row = table.insertRow();
-                                row.insertCell().innerText = pair.hunter.name;
-                                row.insertCell().innerText = pair.blind.description;
+                        document.querySelectorAll('.lottery-table').forEach(l => l.classList.remove('active'));
+                        document.getElementById(lotteryStages[lotteryStage].id).classList.add('active');
+                    });
+
+                    document.getElementById('lottery-next-btn').addEventListener('click', e => {
+                        document.getElementById('lottery-prev-btn').style.visibility = 'visible';
+                        lotteryStage++;
+                        if (lotteryStage >= lotteryStages.length - 1) {
+                            // last stage
+                            lotteryStage = lotteryStages.length - 1;
+                            const selectedHunters = document.querySelectorAll('#lottery-hunters-table tbody input[type="checkbox"]:checked');
+                            const selectedBlinds = document.querySelectorAll('#lottery-blinds-table tbody input[type="checkbox"]:checked');
+                            if (selectedHunters.length !==  selectedBlinds.length) {
+                                alert(`Välj lika många jägare (${selectedHunters.length}) som pass (${selectedBlinds.length}).`);
+                                lotteryStage--;
+                                return;
                             }
-                        })
-                    })
+
+                            lotteryRoll(selectedHunters, selectedBlinds);
+                            document.getElementById('lottery-next-btn').innerText = "Lotta om";
+                        } else {
+                            document.getElementById('lottery-next-btn').innerText = "Nästa";
+                        }
+                        document.querySelectorAll('.lottery-table').forEach(l => l.classList.remove('active'));
+                        document.getElementById(lotteryStages[lotteryStage].id).classList.add('active');
+                    });
                 }
             });
         });
+
+        function lotteryRoll(selectedHunters, selectedBlinds) {
+            fetch(`${BASE_URL}/lottery`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    hunters: Array.from(selectedHunters).map(h => h.value),
+                    blinds: Array.from(selectedBlinds).map(b => b.value)
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                let table = document.getElementById('lottery-result');
+                table.innerHTML = '';
+                for (const pair of data.pairs) {
+                    let row = table.insertRow();
+                    row.insertCell().innerText = pair.hunter.name;
+                    row.insertCell().innerText = pair.blind.description;
+                }
+            })
+        }
 
         // Initial data load
         loadAreas();
