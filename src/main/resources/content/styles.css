@@ -187,21 +187,18 @@ textarea {
     z-index: 1;
 }
 
-.lottery-list {
-    flex: 1;
-    padding: 10px;
-    margin: 10px;
-}
-
-#roll-btn {
-    width: 100%;
-    margin: 8px;
-    padding: 10px;
-}
-
 .lottery-table {
+    display: none;
+    padding: 0;
+    margin: 0;
+}
+
+.lottery-table.overflow {
     overflow-y: scroll;
     height: 40rem;
+}
+
+.lottery-table.active {
     display: block;
 }
 
@@ -211,4 +208,26 @@ textarea {
 
 .lottery-table input[type="checkbox"] {
     transform: scale(2.0);
+}
+
+.lottery-control {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.lottery-control button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#lottery-result-table tbody tr td:first-child {
+    min-width: 20em;
+}
+
+#lottery-prev-btn {
+    visibility: hidden;
 }
