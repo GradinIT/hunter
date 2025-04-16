@@ -15,6 +15,6 @@ import lombok.Setter;
 public class Area {
     private Long id;
     private String name;
-    private Long manager;
+    private Long manager; // TODO: manager is the id of the Hunter who manages this Area
     private String description;
 }

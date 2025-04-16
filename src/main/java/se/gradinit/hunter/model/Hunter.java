@@ -16,5 +16,5 @@ public class Hunter {
     private String name;
     private String email;
     private String phone;
-    private Long areaId;
+    private Long areaId; // TODO: this is the Area that the hunter is a member of Not manager for
 }
