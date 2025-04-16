@@ -128,7 +128,6 @@ label {
 }
 
 input, select, textarea {
-    width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -173,4 +172,43 @@ textarea {
     background-color: #fadbd8;
     border-radius: 4px;
     display: none;
+}
+
+.lottery-selector {
+    display: flex;
+    gap: 20px;
+    margin: 20px;
+    padding: 10px;
+}
+
+.lottery-selector table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.lottery-list {
+    flex: 1;
+    padding: 10px;
+    margin: 10px;
+}
+
+#roll-btn {
+    width: 100%;
+    margin: 8px;
+    padding: 10px;
+}
+
+.lottery-table {
+    overflow-y: scroll;
+    height: 40rem;
+    display: block;
+}
+
+.lottery-table td:last-child {
+    width: 100%;
+}
+
+.lottery-table input[type="checkbox"] {
+    transform: scale(2.0);
 }
