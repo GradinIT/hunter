@@ -277,7 +277,47 @@
         </div>
 
         <!-- Lottery Tab Content -->
-        <div class="tab-content" id="lottery-content"></div>
+        <div class="tab-content" id="lottery-content">
+            <h2>Passlottning</h2>
+            <div class="lottery-selector">
+                <div class="lottery-list">
+                    <table id="lottery-hunters-table" class="lottery-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Jägare</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lottery-hunters-list">
+                        <!-- Hunters will be added dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="lottery-list">
+                    <table id="lottery-blinds-table" class="lottery-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Pass</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lottery-blinds-list">
+                        <!-- Blinds will be added dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <button class="edit-btn" id="roll-btn">Lotta</button>
+            <table id="lottery-result-table">
+                <thead>
+                    <tr>
+                        <th>Jägare</th>
+                        <th>Pass</th>
+                    </tr>
+                </thead>
+                <tbody id="lottery-result"></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -377,6 +417,51 @@
                     loadReports();
                 } else if (tabName === 'observations' && observations.length === 0) {
                     loadObservations();
+                } else if (tabName === 'lottery') {
+                    // Populate hunters list
+                    for (const hunter of hunters) {
+                        let row = document.getElementById('lottery-hunters-list').insertRow();
+                        row.insertCell().innerHTML = `<input type="checkbox" value="${hunter.id}">`;
+                        row.insertCell().innerText = hunter.name;
+                    }
+
+                    // Populate blinds list
+                    for (const blind of blinds) {
+                        let row = document.getElementById('lottery-blinds-list').insertRow();
+                        row.insertCell().innerHTML = `<input type="checkbox" value="${blind.id}">`;
+                        row.insertCell().innerText = blind.description;
+                    }
+
+                    document.getElementById('roll-btn').addEventListener('click', e => {
+                        const selectedHunters = document.querySelectorAll('#lottery-hunters-table tbody input[type="checkbox"]:checked');
+                        const selectedBlinds = document.querySelectorAll('#lottery-blinds-table tbody input[type="checkbox"]:checked');
+
+                        if (selectedHunters.length !==  selectedBlinds.length) {
+                            alert(`Välj lika många jägare (${selectedHunters.length}) som pass (${selectedBlinds.length}).`);
+                            return;
+                        }
+
+                        fetch(`${BASE_URL}/lottery`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                hunters: Array.from(selectedHunters).map(h => h.value),
+                                blinds: Array.from(selectedBlinds).map(b => b.value)
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            let table = document.getElementById('lottery-result');
+                            table.innerHTML = '';
+                            for (const pair of data.pairs) {
+                                let row = table.insertRow();
+                                row.insertCell().innerText = pair.hunter.name;
+                                row.insertCell().innerText = pair.blind.description;
+                            }
+                        })
+                    })
                 }
             });
         });
@@ -384,6 +469,7 @@
         // Initial data load
         loadAreas();
         loadBlinds();
+        loadHunters();
 
         // Areas CRUD operations
         function loadAreas() {
