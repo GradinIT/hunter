@@ -36,6 +36,8 @@ public class LotteryControl {
         }
 
         Collections.shuffle(blinds);
+        Collections.shuffle(hunters);
+
         for (int i = 0; i < hunters.size(); i++) {
             var existingHunter = hunterService.findHunterById(hunters.get(i));
             var existingBlind = blindService.findBlindById(blinds.get(i));
