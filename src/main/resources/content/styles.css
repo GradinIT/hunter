@@ -187,18 +187,22 @@ textarea {
     z-index: 1;
 }
 
-.lottery-table {
+.lottery-stage {
     display: none;
+    width: 100%;
+}
+
+.lottery-table {
     padding: 0;
     margin: 0;
 }
 
 .lottery-table.overflow {
-    overflow-y: scroll;
-    height: 40rem;
+    overflow-y: auto;
+    max-height: 40rem;
 }
 
-.lottery-table.active {
+.lottery-stage.active {
     display: block;
 }
 
