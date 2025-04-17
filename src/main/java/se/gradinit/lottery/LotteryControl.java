@@ -52,4 +52,21 @@ public class LotteryControl {
         }
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/lottery/notify")
+    public ResponseEntity<Void> notifyHunters(@RequestBody LotteryResponse response) {
+        if (response.getPairs() == null || response.getPairs().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        for (LotteryPair pair : response.getPairs()) {
+            var hunter = hunterService.findHunterById(pair.getHunter().getId());
+            var blind = blindService.findBlindById(pair.getBlind().getId());
+            if (hunter.isEmpty() || blind.isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            // TODO: Send email/SMS to the hunter
+        }
+        return ResponseEntity.ok().build();
+    }
 }

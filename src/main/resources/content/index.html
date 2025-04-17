@@ -343,6 +343,7 @@
             <div class="lottery-control">
                 <button class="edit-btn" id="lottery-prev-btn">Tillbaka</button>
                 <button class="edit-btn" id="lottery-next-btn">Nästa</button>
+                <button class="submit-btn" id="lottery-submit-btn" hidden>Skicka resultat till jägare</button>
             </div>
         </div>
     </div>
@@ -475,6 +476,7 @@
                             lotteryStage = 0;
                         }
                         document.getElementById('lottery-next-btn').innerText = "Nästa";
+                        document.getElementById('lottery-submit-btn').hidden = true;
 
                         document.querySelectorAll('.lottery-stage').forEach(l => l.classList.remove('active'));
                         document.getElementById(lotteryStages[lotteryStage].id).classList.add('active');
@@ -496,12 +498,29 @@
 
                             lotteryRoll(selectedHunters, selectedBlinds);
                             document.getElementById('lottery-next-btn').innerText = "Lotta om";
+                            document.getElementById('lottery-submit-btn').hidden = false;
                         } else {
                             document.getElementById('lottery-next-btn').innerText = "Nästa";
                         }
                         document.querySelectorAll('.lottery-stage').forEach(l => l.classList.remove('active'));
                         document.getElementById(lotteryStages[lotteryStage].id).classList.add('active');
                     });
+
+                    document.getElementById('lottery-submit-btn').addEventListener('click', e => {
+                        fetch(`${BASE_URL}/lottery/notify`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(document.getElementById('lottery-result').lotteryResult)
+                        }).then(response => {
+                            if (response.ok) {
+                                alert("Resultatet har skickats till jägarna.");
+                            } else {
+                                alert("Något gick fel när resultatet skulle skickas.");
+                            }
+                        });
+                    })
                 }
             });
         });
@@ -520,6 +539,7 @@
             .then(response => response.json())
             .then(data => {
                 let table = document.getElementById('lottery-result');
+                table.lotteryResult = data;
                 table.innerHTML = '';
                 for (const pair of data.pairs) {
                     let row = table.insertRow();
@@ -752,6 +772,7 @@
                 .then(data => {
                     hunters = data;
                     renderHunters();
+                    renderAreas();
                     hideLoader(huntersLoader);
                 })
                 .catch(error => {
