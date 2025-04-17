@@ -39,7 +39,10 @@
                     </div>
                     <div class="form-group">
                         <label for="area-manager">Manager (Optional):</label>
-                        <input type="text" id="area-manager">
+                        <select id="area-manager">
+                            <option value="">Select an area</option>
+                            <!-- Hunters will be loaded dynamically -->
+                        </select>
                     </div>
                     <div class="form-buttons">
                         <button type="submit" class="submit-btn">Save</button>
@@ -280,7 +283,15 @@
         <div class="tab-content" id="lottery-content">
             <h2>Passlottning</h2>
             <div class="lottery-selector">
-                <table id="lottery-hunters-table" class="lottery-table active overflow">
+                <div id="lottery-hunters" class="lottery-stage active">
+                <h3>Välj jägare</h3>
+                <p>
+                    Välj de jägare i listan som ska delta i lottningen.
+                    Se till att antalet valda jägare är lika många som antalet tillgängliga pass.
+                    När du är klar, fortsätt till nästa steg.
+                </p>
+                <div  class="lottery-table overflow">
+                <table id="lottery-hunters-table">
                     <thead>
                         <tr>
                             <th></th>
@@ -291,7 +302,17 @@
                     <!-- Hunters will be added dynamically -->
                     </tbody>
                 </table>
-                <table id="lottery-blinds-table" class="lottery-table overflow">
+                </div>
+                </div>
+                <div id="lottery-blinds" class="lottery-stage">
+                <h3>Välj pass</h3>
+                <p>
+                    Välj de pass som ska lottas ut till jägarna.
+                    Antalet pass måste vara detsamma som antalet valda jägare.
+                    Fortsätt till nästa steg för att genomföra lottningen.
+                </p>
+                <div  class="lottery-table overflow">
+                <table id="lottery-blinds-table">
                     <thead>
                         <tr>
                             <th></th>
@@ -302,7 +323,12 @@
                     <!-- Blinds will be added dynamically -->
                     </tbody>
                 </table>
-                <table class="lottery-table" id="lottery-result-table">
+                </div>
+                </div>
+                <div id="lottery-results" class="lottery-stage">
+                <h3>Resultat</h3>
+                <div class="lottery-table">
+                <table id="lottery-result-table">
                     <thead>
                     <tr>
                         <th>Jägare</th>
@@ -311,6 +337,8 @@
                     </thead>
                     <tbody id="lottery-result"></tbody>
                 </table>
+                </div>
+                </div>
             </div>
             <div class="lottery-control">
                 <button class="edit-btn" id="lottery-prev-btn">Tillbaka</button>
@@ -338,6 +366,7 @@
         const areaFormElement = document.getElementById('area-form-element');
         const areaFormTitle = document.getElementById('area-form-title');
         const cancelAreaForm = document.getElementById('cancel-area-form');
+        const areaManager = document.getElementById('area-manager');
 
         // Hunters elements
         const huntersList = document.getElementById('hunters-list');
@@ -433,9 +462,9 @@
 
                     let lotteryStage = 0;
                     const lotteryStages = [
-                        { name: 'Jägare', id: 'lottery-hunters-table' },
-                        { name: 'Pass', id: 'lottery-blinds-table' },
-                        { name: 'Resultat', id: 'lottery-result-table' }
+                        { name: 'Jägare', id: 'lottery-hunters' },
+                        { name: 'Pass', id: 'lottery-blinds' },
+                        { name: 'Resultat', id: 'lottery-results' }
                     ];
 
                     document.getElementById('lottery-prev-btn').addEventListener('click', e => {
@@ -447,7 +476,7 @@
                         }
                         document.getElementById('lottery-next-btn').innerText = "Nästa";
 
-                        document.querySelectorAll('.lottery-table').forEach(l => l.classList.remove('active'));
+                        document.querySelectorAll('.lottery-stage').forEach(l => l.classList.remove('active'));
                         document.getElementById(lotteryStages[lotteryStage].id).classList.add('active');
                     });
 
@@ -470,7 +499,7 @@
                         } else {
                             document.getElementById('lottery-next-btn').innerText = "Nästa";
                         }
-                        document.querySelectorAll('.lottery-table').forEach(l => l.classList.remove('active'));
+                        document.querySelectorAll('.lottery-stage').forEach(l => l.classList.remove('active'));
                         document.getElementById(lotteryStages[lotteryStage].id).classList.add('active');
                     });
                 }
@@ -544,7 +573,7 @@
                         <td>${area.id}</td>
                         <td>${area.name}</td>
                         <td>${area.description}</td>
-                        <td>${area.manager || 'N/A'}</td>
+                        <td>${hunters.find(h => h.id === area.manager)?.name || 'N/A'}</td>
                         <td>
                             <button class="action-btn edit-btn" data-id="${area.id}">Edit</button>
                             <button class="action-btn delete-btn" data-id="${area.id}">Delete</button>
@@ -563,6 +592,7 @@
 
             // Also update hunter form options
             updateHunterAreaOptions();
+            updateAreaManagerOptions();
         }
 
         function editArea(id) {
@@ -695,6 +725,19 @@
             }
         });
 
+        function updateAreaManagerOptions() {
+            areaManager.innerHTML = '<option value="">Select a manager</option>';
+
+            hunters.forEach(hunter => {
+                const option = document.createElement('option');
+                option.value = hunter.id;
+                option.textContent = hunter.name;
+                areaManager.appendChild(option);
+            });
+        }
+
+
+
         // Hunters CRUD operations
         function loadHunters() {
             showLoader(huntersLoader);
@@ -764,6 +807,9 @@
 
                 huntersList.appendChild(row);
             });
+
+            // Also update area form manager options
+            updateAreaManagerOptions();
         }
 
         function editHunter(id) {
