@@ -254,6 +254,10 @@
                         <label for="observation-count">Count:</label>
                         <input id="observation-count" type="number" min="0">
                     </div>
+                    <div class="form-group">
+                        <label for="observation-date">Date:</label>
+                        <input id="observation-date" type="date">
+                    </div>
                     <div class="form-buttons">
                         <button type="submit" class="submit-btn">Save</button>
                         <button type="button" class="cancel-btn" id="cancel-observation-form">Cancel</button>
@@ -269,6 +273,7 @@
                     <th>Blind</th>
                     <th>Animal</th>
                     <th>Count</th>
+                    <th>Date</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -1402,6 +1407,7 @@
                 blindId: document.getElementById('observation-blind').value,
                 animal: document.getElementById('observation-animal').value,
                 count: document.getElementById('observation-count').value,
+                date: document.getElementById('observation-date').value,
             };
             showLoader(observationsLoader);
             hideError(observationsError);
@@ -1487,6 +1493,7 @@
                         <td>${blindDescription}</td>
                         <td>${observation.animal || 'N/A'}</td>
                         <td>${observation.count || 0}</td>
+                        <td>${observation.date || 'N/A'}</td>
                         <td>
                             <button class="action-btn delete-btn" data-id="${observation.id}">Delete</button>
                         </td>

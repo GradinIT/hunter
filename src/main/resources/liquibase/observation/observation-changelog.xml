@@ -13,4 +13,9 @@
             <column name="count" type="BIGINT"/>
         </createTable>
     </changeSet>
+    <changeSet id="1745323037037-1" author="olle">
+        <addColumn tableName="observation_entity">
+            <column name="date" type="DATE"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
