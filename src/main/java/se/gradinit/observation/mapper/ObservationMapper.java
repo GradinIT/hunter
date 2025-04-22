@@ -10,6 +10,7 @@ public class ObservationMapper {
                 .blindId(entity.getBlindId())
                 .animal(entity.getAnimal())
                 .count(entity.getCount())
+                .date(entity.getDate())
                 .build();
     }
 
@@ -19,6 +20,7 @@ public class ObservationMapper {
                 .blindId(observation.getBlindId())
                 .animal(observation.getAnimal())
                 .count(observation.getCount())
+                .date(observation.getDate())
                 .build();
     }
 }
