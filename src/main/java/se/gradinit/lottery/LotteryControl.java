@@ -1,25 +1,34 @@
 package se.gradinit.lottery;
 
+import jakarta.mail.MessagingException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import se.gradinit.blind.service.BlindService;
+import se.gradinit.lottery.service.LotteryEmailService;
 import se.gradinit.hunter.service.HunterService;
 import se.gradinit.lottery.model.LotteryPair;
 import se.gradinit.lottery.model.LotteryRequest;
 import se.gradinit.lottery.model.LotteryResponse;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
+@Slf4j
 @RestController
 public class LotteryControl {
     private final HunterService hunterService;
     private final BlindService blindService;
+    private final LotteryEmailService lotteryEmailService;
 
-    public LotteryControl(HunterService hunterService, BlindService blindService) {
+    public LotteryControl(HunterService hunterService, BlindService blindService,
+                          LotteryEmailService lotteryEmailService) {
         this.hunterService = hunterService;
         this.blindService = blindService;
+        this.lotteryEmailService = lotteryEmailService;
     }
 
     @PostMapping("/lottery")
@@ -58,6 +67,16 @@ public class LotteryControl {
         if (response.getPairs() == null || response.getPairs().isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
+        StringBuilder lotteryResultTable = new StringBuilder("""
+                <h1>Passlottning</h1>
+                <table>
+                <tr>
+                <th>Jägare</th>
+                <th>Pass</th>
+                </tr>
+                """);
+
+        List<String> hunterEmails = new ArrayList<>();
         for (LotteryPair pair : response.getPairs()) {
             var hunter = hunterService.findHunterById(pair.getHunter().getId());
             var blind = blindService.findBlindById(pair.getBlind().getId());
@@ -65,8 +84,25 @@ public class LotteryControl {
                 return ResponseEntity.badRequest().build();
             }
 
-            // TODO: Send email/SMS to the hunter
+            lotteryResultTable.append("<tr>\n");
+            lotteryResultTable.append("<td>").append(hunter.get().getName()).append("</td>\n");
+            lotteryResultTable.append("<td>").append(blind.get().getDescription()).append("</td>\n");
+            lotteryResultTable.append("</tr>\n");
+
+            if (hunter.get().getEmail() != null) {
+                hunterEmails.add(hunter.get().getEmail());
+            }
         }
+        lotteryResultTable.append("</table>\n");
+
+        for (String email : hunterEmails) {
+            try {
+                lotteryEmailService.sendMimeMessage(email, "Passlottaren", lotteryResultTable.toString());
+            } catch (MessagingException e) {
+                log.warn("Failed to send email to {}: {}", email, e.getMessage());
+            }
+        }
+
         return ResponseEntity.ok().build();
     }
 }

@@ -40,6 +40,9 @@ public class ObservationService {
                     if (updatedObservation.getCount() != null) {
                         existingObservation.setCount(updatedObservation.getCount());
                     }
+                    if (updatedObservation.getDate() != null) {
+                        existingObservation.setDate(updatedObservation.getDate());
+                    }
                     return ObservationMapper.map(observationRepository.save(existingObservation));
                 });
     }
