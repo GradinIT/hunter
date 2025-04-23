@@ -6,7 +6,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #fefaf1;
 }
 
 .container {
@@ -17,7 +17,7 @@ body {
 
 .header {
     background-color: #2c3e50;
-    color: white;
+    color: #fefaf1;
     padding: 20px;
     text-align: center;
     border-radius: 5px 5px 0 0;
@@ -44,13 +44,13 @@ body {
 }
 
 .tab.active {
-    background-color: #1abc9c;
-    color: #fff;
+    background-color: #fefaf1;
+    color: #000000;
     font-weight: bold;
 }
 
 .content {
-    background-color: white;
+    background-color: #fefaf1;
     padding: 20px;
     border-radius: 5px;
     margin-top: 20px;
@@ -74,15 +74,15 @@ table {
 th, td {
     padding: 12px 15px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #fefaf1;
 }
 
 th {
-    background-color: #f8f9fa;
+    background-color: #fefaf1;
 }
 
 tr:hover {
-    background-color: #f1f1f1;
+    background-color: #fefaf1;
 }
 
 .action-btn {
@@ -91,7 +91,7 @@ tr:hover {
     cursor: pointer;
     border: none;
     border-radius: 4px;
-    color: white;
+    color: #fefaf1;
 }
 
 .edit-btn {
@@ -112,7 +112,7 @@ tr:hover {
 .form-container {
     margin-top: 20px;
     padding: 20px;
-    background-color: #f8f9fa;
+    background-color: #fefaf1;
     border-radius: 5px;
     display: none;
 }
