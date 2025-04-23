@@ -96,6 +96,13 @@
                         <label for="hunter-email">Email:</label>
                         <input type="text" id="hunter-email">
                     </div>
+                    <div class="form-group">
+                        <label for="hunter-leader">Leader:</label>
+                        <select id="hunter-leader">
+                            <option value="false">No</option>
+                            <option value="true">Yes</option>
+                        </select>
+                    </div>
                     <div class="form-buttons">
                         <button type="submit" class="submit-btn">Save</button>
                         <button type="button" class="cancel-btn" id="cancel-hunter-form">Cancel</button>
@@ -112,6 +119,7 @@
                     <th>Assigned Area</th>
                     <th>Phone</th>
                     <th>Email</th>
+                    <th>Leader</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -818,6 +826,7 @@
                         <td>${areaName}</td>
                         <td>${hunter.phone || ''}</td>
                         <td>${hunter.email || ''}</td>
+                        <td>${hunter.leader ? 'Yes' : ''}</td>
                         <td>
                             <button class="action-btn edit-btn" data-id="${hunter.id}">Edit</button>
                             <button class="action-btn delete-btn" data-id="${hunter.id}">Delete</button>
@@ -848,6 +857,7 @@
             document.getElementById('hunter-area').value = hunter.areaId;
             document.getElementById('hunter-phone').value = hunter.phone;
             document.getElementById('hunter-email').value = hunter.email;
+            document.getElementById('hunter-leader').value = hunter.leader ? 'true' : 'false';
 
             hunterFormTitle.textContent = 'Edit Hunter';
             showForm(hunterForm);
@@ -898,7 +908,8 @@
                 name: document.getElementById('hunter-name').value,
                 areaId: document.getElementById('hunter-area').value,
                 phone: document.getElementById('hunter-phone').value,
-                email: document.getElementById('hunter-email').value
+                email: document.getElementById('hunter-email').value,
+                leader: document.getElementById('hunter-leader').value === 'true',
             };
 
             showLoader(huntersLoader);

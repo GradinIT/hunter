@@ -34,6 +34,9 @@ public class HunterService {
             if (updatedHunter.getAreaId() != null) {
                 existingHunter.setAreaId(updatedHunter.getAreaId());
             }
+            if (updatedHunter.getLeader() != null) {
+                existingHunter.setLeader(updatedHunter.getLeader());
+            }
             return HunterMapper.map(hunterRepository.save(existingHunter));
         });
     }
