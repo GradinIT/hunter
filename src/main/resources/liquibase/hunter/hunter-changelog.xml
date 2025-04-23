@@ -22,4 +22,9 @@
     <changeSet id="1743694793097-2" author="olle">
         <dropForeignKeyConstraint baseTableName="hunter_entity" constraintName="fk_hunterentity_on_area"/>
     </changeSet>
+    <changeSet id="1745396651311-1" author="olle">
+        <addColumn tableName="hunter_entity">
+            <column name="leader" type="BOOLEAN"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

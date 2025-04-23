@@ -12,6 +12,9 @@ import se.gradinit.HunterSpringBootApplication;
 import se.gradinit.observation.model.Observation;
 import se.gradinit.observation.service.ObservationService;
 
+import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -87,5 +90,18 @@ public class ObservationControlTest {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.count").value(2L));
+    }
+
+    @Test
+    public void testGetObservationsByDate() {
+        LocalDate date = LocalDate.parse("1971-10-01");
+        assertEquals(0, observationService.getObservationsByDate(date).size());
+        observationService.createObservation(Observation.builder()
+                .blindId(1L)
+                .animal("Älg")
+                .count(1L)
+                .date(date)
+                .build());
+        assertEquals(1, observationService.getObservationsByDate(date).size());
     }
 }

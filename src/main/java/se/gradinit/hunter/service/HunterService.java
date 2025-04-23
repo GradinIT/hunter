@@ -60,4 +60,10 @@ public class HunterService {
                 .map(HunterMapper::map)
                 .toList();
     }
+
+    public List<Hunter> findHuntLeaders() {
+        return hunterRepository.findHunterLeaders().stream()
+                .map(HunterMapper::map)
+                .toList();
+    }
 }

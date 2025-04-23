@@ -24,4 +24,5 @@ public class HunterEntity {
     private String email;
     private String phone;
     private Long areaId;
+    private Boolean leader;
 }
