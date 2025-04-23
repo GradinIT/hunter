@@ -12,6 +12,7 @@ import se.gradinit.HunterSpringBootApplication;
 import se.gradinit.hunter.model.Hunter;
 import se.gradinit.hunter.service.HunterService;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -86,4 +87,18 @@ public class HunterControlTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.areaId").value(4L));
     }
 
+    @Test
+    public void testGetHuntLeaders() {
+        Hunter hunter = Hunter.builder()
+                .name("John Doe")
+                .email("john.doe@example.com")
+                .phone("1234567890")
+                .areaId(1L)
+                .leader(true)
+                .build();
+        hunter = hunterService.createHunter(hunter);
+        var leaders = hunterService.findHuntLeaders();
+        Long hunterId = hunter.getId();
+        assertTrue(leaders.stream().anyMatch(h -> h.getId().equals(hunterId)));
+    }
 }

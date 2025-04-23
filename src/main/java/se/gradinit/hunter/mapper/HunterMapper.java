@@ -11,6 +11,7 @@ public class HunterMapper {
                 .email(hunter.getEmail())
                 .phone(hunter.getPhone())
                 .areaId(hunter.getAreaId())
+                .leader(hunter.getLeader())
                 .build();
     }
 
@@ -21,6 +22,7 @@ public class HunterMapper {
                 .email(hunter.getEmail())
                 .phone(hunter.getPhone())
                 .areaId(hunter.getAreaId())
+                .leader(hunter.getLeader())
                 .build();
     }
 }

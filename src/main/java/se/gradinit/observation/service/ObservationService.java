@@ -5,6 +5,8 @@ import se.gradinit.observation.dao.ObservationRepository;
 import se.gradinit.observation.mapper.ObservationMapper;
 import se.gradinit.observation.model.Observation;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,6 +51,12 @@ public class ObservationService {
 
     public List<Observation> getAllObservations() {
         return observationRepository.findAll().stream()
+                .map(ObservationMapper::map)
+                .toList();
+    }
+
+    public List<Observation> getObservationsByDate(LocalDate date) {
+        return observationRepository.findByDate(date).stream()
                 .map(ObservationMapper::map)
                 .toList();
     }
