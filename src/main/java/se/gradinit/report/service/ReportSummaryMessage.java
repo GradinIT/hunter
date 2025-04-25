@@ -13,6 +13,7 @@ import se.gradinit.report.model.Report;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 @Component
@@ -62,21 +63,29 @@ public class ReportSummaryMessage {
             var text = new StringBuilder("""
                     <h1>Rapporter</h1>
                     <table>
-                    <tr><th>Pass</th><th>Såt</th><th>Lagas</th><th>Flytta</th><th>Rensa</th></tr>
+                    <tr><th>Pass</th><th>Åtgärder</th></tr>
                     """);
+            var blindActions = new HashMap<Long, HashSet<String>>();
             for (var report : reportsByArea.get(areaId)) {
-                String blindDescription = report.getBlindId().toString();
-                var blind = blindService.findBlindById(report.getBlindId());
-                if (blind.isPresent()) {
-                    blindDescription = blind.get().getDescription();
+                var actions = new HashSet<String>();
+                if (!report.getRepair().isEmpty()) {
+                    actions.add(report.getRepair());
                 }
+                if (report.getMove()) {
+                    actions.add("flytta");
+                }
+                if (report.getClear()) {
+                    actions.add("röjning behövs");
+                }
+                blindActions.computeIfAbsent(report.getBlindId(), k -> new HashSet<>()).addAll(actions);
+            }
 
+            for (var blindId : blindActions.keySet()) {
+                var blind = blindService.findBlindById(blindId);
+                var actions = blindActions.get(blindId);
                 text.append("<tr>");
-                text.append("<td>").append(blindDescription).append("</td>");
-                text.append("<td>").append(area.get().getName()).append("</td>");
-                text.append("<td>").append(report.getRepair()).append("</td>");
-                text.append("<td>").append(report.getMove() ? "Ja" : "Nej").append("</td>");
-                text.append("<td>").append(report.getClear() ? "Ja" : "Nej").append("</td>");
+                text.append("<td>").append(blind.isPresent() ? blind.get().getDescription() : blindId).append("</td>");
+                text.append("<td>").append(String.join(", ", actions)).append("</td>");
                 text.append("</tr>\n");
             }
             text.append("</table>");
@@ -87,6 +96,8 @@ public class ReportSummaryMessage {
             helper.setSubject("Rapporter från " + area.get().getName());
             helper.setText(text.toString(), true);
             emailSender.send(message);
+            System.out.println("Sending email to: " + manager.get().getEmail());
+            System.out.println("Email content: " + text.toString());
         }
     }
 }
