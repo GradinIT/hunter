@@ -184,6 +184,7 @@
         <!-- Reports Tab Content -->
         <div class="tab-content" id="reports-content">
             <button class="add-btn" id="add-report-btn">Add New report</button>
+            <button class="add-btn" id="send-report-btn">Send reports to managers</button>
             <!-- Report Form -->
             <div class="form-container" id="report-form">
                 <h2 id="report-form-title">Add New report</h2>
@@ -1282,6 +1283,21 @@
                         hideForm(reportForm);
                     });
             }
+        });
+
+        document.getElementById('send-report-btn').addEventListener('click', () => {
+            if (!confirm('Are you sure you want to send all reports to their manager?')) {
+                return;
+            }
+
+            fetch(`${BASE_URL}/report/notify`, {
+                method: 'POST',
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to send reports');
+                    }
+                });
         });
 
         function renderReports() {
